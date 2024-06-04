@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using Data;
-using GameServices;
 using UnityEngine;
 
 namespace Game
@@ -9,7 +6,7 @@ namespace Game
     {
         [SerializeField] private ServiceLoader serviceLoader;
 
-        //[SerializeField] private TasksController tasksController;
+        [SerializeField] private TasksController tasksController;
 
         private void Start()
         {
@@ -18,7 +15,7 @@ namespace Game
 
             //Test();
 
-            //tasksController.Init();
+            tasksController.Init();
         }
 
 

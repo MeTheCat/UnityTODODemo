@@ -13,5 +13,6 @@ public class ServiceLoader : MonoBehaviour
     {
         Services.Instance.Register(new JsonConverterService());
         Services.Instance.Register(new HttpService());
+        Services.Instance.Register(new UserDataService());
     }
 }
