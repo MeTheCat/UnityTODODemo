@@ -17,8 +17,6 @@ namespace Game.UI
             public Action OnDoneClick;
         }
 
-        //[SerializeField] private TextMeshProUGUI titleText;
-        [SerializeField] private TextMeshProUGUI contentText;
         [SerializeField] private TMP_InputField contentTextField;
         [SerializeField] private UIButton buttonDelete, buttonEdit, buttonSave;
 
@@ -27,7 +25,6 @@ namespace Game.UI
         public void SetData(UITaskItemData data)
         {
             this.data = data;
-            contentText.text = data.Content;
             contentTextField.text = data.Content;
             SetTextEditable(false);
             //Recalculate content size?
@@ -50,11 +47,6 @@ namespace Game.UI
             contentTextField.enabled = isEditable;
             buttonEdit.gameObject.SetActive(!isEditable);
             buttonSave.gameObject.SetActive(isEditable);
-        }
-
-        public string GetText()
-        {
-            return contentText.text;
         }
 
         private void OnEditClick()

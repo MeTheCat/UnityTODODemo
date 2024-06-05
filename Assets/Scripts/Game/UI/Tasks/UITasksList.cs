@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,11 +7,6 @@ namespace Game.UI
     {
         [SerializeField] private GameObject loadingIndicator;
         [SerializeField] private ScrollRect scrollView;
-
-        public void SetData(List<UITaskItem.UITaskItemData> taskItemsData)
-        {
-
-        }
 
         public void SetLoading(bool isLoading)
         {

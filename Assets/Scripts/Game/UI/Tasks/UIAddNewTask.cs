@@ -22,7 +22,6 @@ namespace Game.UI
         {
             textInputContent.interactable = !isLoading;
             buttonAdd.SetInteractable(!isLoading);
-            //Show loading circle
         }
 
         private void ButtonAddHandler()

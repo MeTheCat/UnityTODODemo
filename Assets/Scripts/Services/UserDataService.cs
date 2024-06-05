@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using Data;
 using GameServices;
 using UnityEngine;
@@ -11,7 +10,6 @@ public class UserDataService : IService
 {
     public class UserData
     {
-        //public List<TaskItem> TaskItems = new();
         public Dictionary<int, TaskItem> TaskItemsById;
         public int GetLastId() => TaskItemsById.Max(x => x.Key);
     }
@@ -31,7 +29,6 @@ public class UserDataService : IService
     {
         try
         {
-            //await Task.Run(() => { Thread.Sleep(5000); });
             var res = await httpService.GetRequestAsync(todoUrl);
             var data = jsonConverterService.DeserializeObject<List<TaskItem>>(res);
 
@@ -53,12 +50,11 @@ public class UserDataService : IService
             string jsonData = "";
             var newItemData = new Data.TaskItem()
             {
-                title = HttpUtility.UrlEncode(text),
+                title = text,
                 id = nextId
             };
             jsonData = jsonConverterService.SerializeObject(newItemData);
 
-            //await Task.Run(() => { Thread.Sleep(2000); });
             var resp = await httpService.PostRequestAsync(todoUrl, jsonData);
             Debug.Log($"[UserDataService] Add new task result: {resp} with id {nextId}");
 
@@ -82,7 +78,7 @@ public class UserDataService : IService
             var newItemData = new Data.TaskItem()
             {
                 id = id,
-                title = HttpUtility.UrlEncode(text)
+                title = text
             };
             jsonData = jsonConverterService.SerializeObject(newItemData);
 

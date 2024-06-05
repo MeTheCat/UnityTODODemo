@@ -34,6 +34,7 @@ namespace Game.Tasks
             }
             catch
             {
+                Debug.Log("Show UI Error"); 
                 //TODO: Show error/retry button
                 return;
             }
@@ -76,7 +77,7 @@ namespace Game.Tasks
             }
             catch
             {
-                //Show error in UI
+                Debug.Log("Show UI Error");  //Show an error in UI
             }
 
             uIAddNewTaskComponent.SetLoading(false);
@@ -99,19 +100,14 @@ namespace Game.Tasks
             }
             catch
             {
-                //Show error in UI
+                Debug.Log("Show UI Error"); //Show error in UI
                 //Either keep entered text, or revert to the original
             }
         }
 
         private bool HandleEmptyString(string text)
         {
-            return false;
-            if (string.IsNullOrEmpty(text))
-            {
-                //Show error in ui in case we don't want empty strings
-                return true;
-            }
+            //Show error in ui in case we don't want empty strings
             return false;
         }
     }
