@@ -1,104 +1,118 @@
 using Data;
+using Game.UI;
 using GameServices;
 using UnityEngine;
 
-public class TasksController : MonoBehaviour
+namespace Game.Tasks
 {
-    [SerializeField] private UITasksList uITasksList;
-    [SerializeField] private UITaskItem uITaskItemPrefab;
-    [SerializeField] private UIAddNewTask uIAddNewTaskComponent;
-    [SerializeField] private Transform scrollContentParent;
-    private UserDataService userDataService;
-
-    public void Init()
+    public class TasksController : MonoBehaviour
     {
-        userDataService = Services.Instance.Get<UserDataService>();
+        [SerializeField] private UITasksList uITasksList;
+        [SerializeField] private UITaskItem uITaskItemPrefab;
+        [SerializeField] private UIAddNewTask uIAddNewTaskComponent;
+        [SerializeField] private Transform scrollContentParent;
+        private UserDataService userDataService;
 
-        GetTasksData();
-
-        uIAddNewTaskComponent.OnSubmitAdd -= AddTaskClicked;
-        uIAddNewTaskComponent.OnSubmitAdd += AddTaskClicked;
-    }
-
-    private async void GetTasksData()
-    {
-        this.uITasksList.SetLoading(true);
-        this.uIAddNewTaskComponent.SetLoading(true);
-
-        try
+        public void Init()
         {
-            await userDataService.FetchInitialDataAsync();
-        }
-        catch
-        {
-            //TODO: Show error/retry button
-            return;
+            userDataService = Services.Instance.Get<UserDataService>();
+
+            GetTasksData();
+
+            uIAddNewTaskComponent.OnSubmitAdd -= AddTaskClicked;
+            uIAddNewTaskComponent.OnSubmitAdd += AddTaskClicked;
         }
 
-        var tasks = userDataService.GetUserData().TaskItemsById;
-
-        foreach (var t in tasks)
+        private async void GetTasksData()
         {
-            InstantiateTaskItem(t.Value);
+            this.uITasksList.SetLoading(true);
+            this.uIAddNewTaskComponent.SetLoading(true);
+
+            try
+            {
+                await userDataService.FetchInitialDataAsync();
+            }
+            catch
+            {
+                //TODO: Show error/retry button
+                return;
+            }
+
+            var tasks = userDataService.GetUserData().TaskItemsById;
+
+            foreach (var t in tasks)
+            {
+                InstantiateTaskItem(t.Value);
+            }
+
+            this.uITasksList.SetLoading(false);
+            this.uIAddNewTaskComponent.SetLoading(false);
         }
 
-        this.uITasksList.SetLoading(false);
-        this.uIAddNewTaskComponent.SetLoading(false);
-    }
-
-    private void InstantiateTaskItem(TaskItem t)
-    {
-        var taskItem = Instantiate(uITaskItemPrefab, scrollContentParent);
-        taskItem.SetData(new UITaskItem.UITaskItemData()
+        private void InstantiateTaskItem(TaskItem t)
         {
-            Id = t.id,
-            Content = t.title,
-            OnDoneClick = () => Debug.Log("Mark done"),
-            OnDeleteClick = () => Debug.Log("Delete"),
-            OnEditClick = (item) => item.SetTextEditable(true),
-            OnSaveClick = SaveTaskClicked
-        });
-    }
-
-    private async void AddTaskClicked(string text)
-    {
-        if (HandleEmptyString(text)) return;
-
-        uIAddNewTaskComponent.SetLoading(true);
-
-        try
-        {
-            var newItem = await userDataService.AddTaskAsync(text);
-            InstantiateTaskItem(newItem);
-        }
-        catch
-        {
-            //Show error in UI
+            var taskItem = Instantiate(uITaskItemPrefab, scrollContentParent);
+            taskItem.SetData(new UITaskItem.UITaskItemData()
+            {
+                Id = t.id,
+                Content = t.title,
+                OnDoneClick = () => Debug.Log("Mark done"),
+                OnDeleteClick = () => Debug.Log("Delete"),
+                OnEditClick = (item) => item.SetTextEditable(true),
+                OnSaveClick = SaveTaskClicked
+            });
         }
 
-        uIAddNewTaskComponent.SetLoading(false);
-    }
-
-    private async void SaveTaskClicked(UITaskItem item, int taskId, string text)
-    {
-        if (HandleEmptyString(text)) return;
-
-        item.SetTextEditable(false);
-        uIAddNewTaskComponent.SetLoading(true);
-
-        await userDataService.EditTaskAsync(taskId, text);
-
-        uIAddNewTaskComponent.SetLoading(false);
-    }
-
-    private bool HandleEmptyString(string text)
-    {
-        return false;
-        if (string.IsNullOrEmpty(text))
+        private async void AddTaskClicked(string text)
         {
-            //Show error in ui in case we don't want empty strings
-            return true;
+            if (HandleEmptyString(text)) return;
+
+            uIAddNewTaskComponent.SetLoading(true);
+
+            try
+            {
+                var newItem = await userDataService.AddTaskAsync(text);
+                InstantiateTaskItem(newItem);
+            }
+            catch
+            {
+                //Show error in UI
+            }
+
+            uIAddNewTaskComponent.SetLoading(false);
         }
-        return false;
+
+        private async void SaveTaskClicked(UITaskItem item, int taskId, string text)
+        {
+            if (HandleEmptyString(text)) return;
+
+            item.SetTextEditable(false);
+
+            if (userDataService.GetUserData().TaskItemsById[taskId].title.Equals(text))
+            {
+                return;
+            }
+
+            try
+            {
+                await userDataService.EditTaskAsync(taskId, text);
+            }
+            catch
+            {
+                //Show error in UI
+                //Either keep entered text, or revert to the original
+            }
+        }
+
+        private bool HandleEmptyString(string text)
+        {
+            return false;
+            if (string.IsNullOrEmpty(text))
+            {
+                //Show error in ui in case we don't want empty strings
+                return true;
+            }
+            return false;
+        }
     }
 }

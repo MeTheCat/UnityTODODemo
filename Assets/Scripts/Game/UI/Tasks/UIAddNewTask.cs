@@ -1,29 +1,33 @@
 using System;
+using Game.UI.Common;
 using TMPro;
 using UnityEngine;
 
-public class UIAddNewTask : MonoBehaviour
+namespace Game.UI
 {
-    [SerializeField] private TMP_InputField textInputContent;
-    [SerializeField] private UIButton buttonAdd;
-
-    public Action<string> OnSubmitAdd;
-
-    public void Awake()
+    public class UIAddNewTask : MonoBehaviour
     {
-        buttonAdd.OnClick -= ButtonAddHandler;
-        buttonAdd.OnClick += ButtonAddHandler;
-    }
+        [SerializeField] private TMP_InputField textInputContent;
+        [SerializeField] private UIButton buttonAdd;
 
-    public void SetLoading(bool isLoading)
-    {
-        textInputContent.interactable = !isLoading;
-        buttonAdd.SetInteractable(!isLoading);
-        //Show loading circle
-    }
+        public Action<string> OnSubmitAdd;
 
-    private void ButtonAddHandler()
-    {
-        OnSubmitAdd?.Invoke(textInputContent.text);
+        public void Awake()
+        {
+            buttonAdd.OnClick -= ButtonAddHandler;
+            buttonAdd.OnClick += ButtonAddHandler;
+        }
+
+        public void SetLoading(bool isLoading)
+        {
+            textInputContent.interactable = !isLoading;
+            buttonAdd.SetInteractable(!isLoading);
+            //Show loading circle
+        }
+
+        private void ButtonAddHandler()
+        {
+            OnSubmitAdd?.Invoke(textInputContent.text);
+        }
     }
 }

@@ -3,20 +3,23 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UIButton : MonoBehaviour, IPointerClickHandler
+namespace Game.UI.Common
 {
-    [SerializeField] Button button;
-
-    public Action OnClick;
-
-    public void OnPointerClick(PointerEventData eventData)
+    public class UIButton : MonoBehaviour, IPointerClickHandler
     {
-        if (!button.interactable) return;
-        OnClick?.Invoke();
-    }
+        [SerializeField] Button button;
 
-    internal void SetInteractable(bool interactable)
-    {
-        this.button.interactable = interactable;
+        public Action OnClick;
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (!button.interactable) return;
+            OnClick?.Invoke();
+        }
+
+        internal void SetInteractable(bool interactable)
+        {
+            this.button.interactable = interactable;
+        }
     }
 }

@@ -1,18 +1,21 @@
 using GameServices;
 using UnityEngine;
 
-public class ServiceLoader : MonoBehaviour
+namespace Game
 {
-    public void Init()
+    public class ServiceLoader : MonoBehaviour
     {
-        Services.Init();
-        CreateServices();
-    }
+        public void Init()
+        {
+            Services.Init();
+            CreateServices();
+        }
 
-    public void CreateServices()
-    {
-        Services.Instance.Register(new JsonConverterService());
-        Services.Instance.Register(new HttpService());
-        Services.Instance.Register(new UserDataService());
+        public void CreateServices()
+        {
+            Services.Instance.Register(new JsonConverterService());
+            Services.Instance.Register(new HttpService());
+            Services.Instance.Register(new UserDataService());
+        }
     }
 }
